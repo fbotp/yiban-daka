@@ -97,11 +97,10 @@ def daka():
     access_token = response.url.split("access_token=")[1]
 
     school_home_url = "该应用主url, http://xxxx"
+    school_home_domain = re.search('https?://([A-Za-z_0-9.-]+).*', school_home_url).group(1)
 
     school_login_url = f"{school_home_url}?access_token={access_token}"
     # school_login_url = response.url
-
-    
 
     login_headers = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -109,7 +108,7 @@ def daka():
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-        'Host': '学校易班应用域名',
+        'Host': school_home_domain,
         'Pragma': 'no-cache',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 11; RMX2121 Build/RP1A.200720.011)',
