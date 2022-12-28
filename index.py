@@ -53,6 +53,7 @@ def sendEmail(fromAddr, toAddr, subject, content):
 def daka():
     session = Session()
 
+    # data部分建议在oauth登录时进行一次抓包
     data = {
         'oauth_uname': '易班用户',
         'oauth_upwd': '易班密码',
@@ -63,6 +64,8 @@ def daka():
         'display': 'html',
     }
 
+    yiban_oauth_url = f"https://oauth.yiban.cn/code/html?client_id={data['client_id']}&redirect_uri={data['redirect_uri']}&state={data['state']}"
+
     headers = {
         'Accept': '*/*',
         'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -71,7 +74,7 @@ def daka():
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'Origin': 'https://oauth.yiban.cn',
         'Pragma': 'no-cache',
-        'Referer': f"https://oauth.yiban.cn/code/html?client_id={data['client_id']}&redirect_uri={data['redirect_url']}&state={data['state']}",
+        'Referer': yiban_oauth_url,
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
@@ -82,30 +85,37 @@ def daka():
         'sec-ch-ua-platform': '"Android"',
     }
 
-    r = session.get(f"https://oauth.yiban.cn/code/html?client_id={data['client_id']}&redirect_uri={data['redirect_url']}&state={data['state']}", headers=headers)
+    r = session.get(yiban_oauth_url, headers=headers)
     sub = r'<input type="test" id="key" value="([\s\S]*?)" style="display:none">'
     public_key = re.findall(sub, r.text)[0]
     public_key = rsa.PublicKey.load_pkcs1_openssl_pem(public_key.encode('utf-8'))
     data["oauth_upwd"] = base64.b64encode(rsa.encrypt(data["oauth_upwd"].encode(), public_key)).decode()
 
+    # 易班授权登录，拿到access_token，或者直接按照response里的url跳转
     session.post('https://oauth.yiban.cn/code/usersure', headers=headers, data=data)
     response = session.get(data["redirect_uri"], headers=headers)
     access_token = response.url.split("access_token=")[1]
 
-    login_url = '抓包得' + access_token
+    school_home_url = "该应用主url, http://xxxx"
+
+    school_login_url = f"{school_home_url}?access_token={access_token}"
+    # school_login_url = response.url
+
+    
+
     login_headers = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-        'Host': '学校易班域名',
+        'Host': '学校易班应用域名',
         'Pragma': 'no-cache',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 11; RMX2121 Build/RP1A.200720.011)',
      }
 
-    school_home_url = "学校易班平台url"
+    
 
     try:
         token = json.loads(session.get(login_url, headers=login_headers).content)['token']
