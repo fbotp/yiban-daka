@@ -128,37 +128,13 @@ def daka():
     login_headers["Origin"] = school_home_url
 
     daka_url = school_home_url + "/api/diag/click"
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    a_p = datetime.datetime.now().strftime("%p")
     data = {
-        "yb_uid": int, # id
-        "temperature": int, # 体温
-        "address": "XX,XX,XX", # 地址
-        "position": None,
-        "date": datetime.date.today().strftime("%Y-%m-%d"),
-        "is_illness": 0,
-        "create_time": current_time,
-        "update_time": current_time,
-        "delete_time": None,
-        "time": a_p.upper(),
-        "is_go_out": "否",
-        "go_out_address": "",
-        "is_14_ncp": "否",
-        "is_touch_patient": "否",
-        "is_return_school": "",
-        "return_datetime": "0000-00-00 00:00:00",
-        "return_vehicle": "",
-        "health": "健康",
-        "is_cough": ".",
-        "is_go_doctor": "",
-        "hospital": "",
-        "result": "",
-        "is_isolated": "",
-        "isolated_place": "",
-        "jt_health": "健康",
-        "jt_remark": "",
-        "remark_qt": "",
-        "time_type": a_p.lower(),
+        "is_temperature": 0,
+        "is_covid_status": 2,
+        "covid_time": "2023-01-01",
+        "status": 3,
+        "ym_no": 4,
+        "time_type": "am",
         "stu_type": "2"
     }
 
